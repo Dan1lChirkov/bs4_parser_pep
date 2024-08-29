@@ -6,11 +6,13 @@ from urllib.parse import urljoin
 import requests_cache
 from bs4 import BeautifulSoup
 from tqdm import tqdm
+from collections import defaultdict
 
 from constants import BASE_DIR, MAIN_DOC_URL, PEP_URL, EXPECTED_STATUS
 from configs import configure_argument_parser, configure_logging
 from outputs import control_output
 from utils import get_response, find_tag
+from exceptions import ParserFindTagException
 
 
 def whats_new(session):
@@ -53,7 +55,7 @@ def latest_versions(session):
             a_tags = ul.find_all('a')
             break
     else:
-        raise Exception('Ничего не нашлось')
+        raise ParserFindTagException('Ничего не нашлось')
     results = [('Ссылка на документацию', 'Версия', 'Статус')]
     pattern = r'Python (?P<version>\d\.\d+) \((?P<status>.*)\)'
     for a_tag in a_tags:
@@ -105,7 +107,7 @@ def pep(session):
     tbody = find_tag(num_index, 'tbody')
     tr = tbody.find_all('tr')
     pep_count = 0
-    status_count = {}
+    status_count = defaultdict()
     results = [('Статус', 'Количество')]
     for pep in tqdm(tr):
         pep_count += 1
