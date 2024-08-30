@@ -139,10 +139,7 @@ def pep(session):
                 f'Статус в карточке: {status_page}'
                 f'Ожидаемые статусы: {status_long}'
             )
-        if status_page not in status_count:
-            status_count[status_page] = 1
-        else:
-            status_count[status_page] += 1
+        status_count[status_page] += 1
     results.extend(status_count.items())
     results.append(('Total', pep_count))
     return results
